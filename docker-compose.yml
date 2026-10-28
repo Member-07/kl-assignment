@@ -1,0 +1,57 @@
+name: kl-assignment
+services:
+  kl-assignment-db:
+    container_name: kl-assignment-db
+    image: mysql:8.4
+    ports:
+      - "3306:3306"
+    command:
+      - --max-allowed-packet=256M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - 127.0.0.1
+        - --silent
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+  migrate:
+    image: migrate/migrate
+    command:
+      - "-path=/migrations"
+      - "-database"
+      - "mysql://${DB_USER}:${DB_PASSWORD}@tcp(kl-assignment-db:3306)/${DB_NAME}"
+      - "up"
+    volumes:
+      - ./migrations:/migrations:ro
+    depends_on:
+      kl-assignment-db:
+        condition: service_healthy
+  api:
+    build: .
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    # environment:
+    #   PORT: ${PORT}
+    #   MYSQL_DATABASE: ${DB_NAME}
+    #   MYSQL_USER: ${DB_USER}
+    #   MYSQL_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      kl-assignment-db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
