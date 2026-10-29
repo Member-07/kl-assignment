@@ -3,7 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
-	"kl-assignment/config"
+	"kl-assignment/pkg/config"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -20,7 +20,6 @@ func buildDNS(user, password, host, port, dbName string) string {
 func ConnectMysql(config config.DB) (*gorm.DB, error) {
 	dns := mysql.Open(buildDNS(config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName))
 
-	fmt.Println("dns", buildDNS(config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName))
 	db, err := gorm.Open(dns, &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")

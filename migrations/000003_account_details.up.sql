@@ -22057,3 +22057,5 @@ INSERT INTO `account_details` (`account_id`, `user_id`, `color`, `is_main_accoun
 ('01c2c78ae1a211ef95a30242ac180002', '01c2c67ee1a211ef95a30242ac180002', '#24c875', 1, 71, 'dummy_value_5'),
 ('01c2cba8e1a211ef95a30242ac180002', '01c2c67ee1a211ef95a30242ac180002', '#24c875', 0, 69, 'dummy_value_5'),
 ('01c2cf3de1a211ef95a30242ac180002', '01c2c67ee1a211ef95a30242ac180002', '#24c875', 0, 30, 'dummy_value_5');
+INSERT INTO `account_details` (`account_id`, `user_id`, `color`, `is_main_account`, `progress`, `dummy_col_5`) VALUES
+('5a5b3efee1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', '#24c875', 0, 80, 'dummy_value_5');

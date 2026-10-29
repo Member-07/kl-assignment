@@ -25549,3 +25549,7 @@ INSERT INTO `accounts` (`account_id`, `user_id`, `type`, `currency`, `account_nu
 ('02099d9fe1a211ef95a30242ac180002', '020994afe1a211ef95a30242ac180002', 'saving-account', 'THB', '568-2-72376', 'TestLab', 'dummy_value_3'),
 ('0209a4d1e1a211ef95a30242ac180002', '0209a3c0e1a211ef95a30242ac180002', 'saving-account', 'THB', '568-2-50027', 'TestLab', 'dummy_value_3'),
 ('0209a852e1a211ef95a30242ac180002', '0209a3c0e1a211ef95a30242ac180002', 'saving-account', 'THB', '568-2-27325', 'TestLab', 'dummy_value_3');
+INSERT INTO `accounts` (`account_id`, `user_id`, `type`, `currency`, `account_number`, `issuer`, `dummy_col_3`) VALUES
+('5a5b0fafe1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', 'saving-account', 'THB', '568-2-67511', 'TestLab', 'dummy_value_3'),
+('5a5b2df8e1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', 'saving-account', 'THB', '568-2-92178', 'TestLab', 'dummy_value_3'),
+('5a5b3efee1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', 'saving-account', 'THB', '568-2-32913', 'TestLab', 'dummy_value_3');

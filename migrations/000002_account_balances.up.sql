@@ -10033,3 +10033,7 @@ INSERT INTO `account_balances` (`account_id`, `user_id`, `amount`, `dummy_col_4`
 ('00ccdfc4e1a211ef95a30242ac180002', '00ccdeb0e1a211ef95a30242ac180002', 63547.24, 'dummy_value_4'),
 ('00cce37ce1a211ef95a30242ac180002', '00ccdeb0e1a211ef95a30242ac180002', 24124.41, 'dummy_value_4'),
 ('00cce6f4e1a211ef95a30242ac180002', '00ccdeb0e1a211ef95a30242ac180002', 53604.64, 'dummy_value_4');
+INSERT INTO `account_balances` (`account_id`, `user_id`, `amount`, `dummy_col_4`) VALUES
+('5a5b0fafe1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', 55473.82, 'dummy_value_4'),
+('5a5b2df8e1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', 84294.56, 'dummy_value_4'),
+('5a5b3efee1a111ef80ca0242ac180002', '5a5ae9dae1a111ef80ca0242ac180002', 95779.56, 'dummy_value_4')

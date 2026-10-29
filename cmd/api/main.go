@@ -1,8 +1,8 @@
 package main
 
 import (
-	"kl-assignment/config"
-	"kl-assignment/database"
+	"kl-assignment/pkg/config"
+	"kl-assignment/pkg/database"
 	"kl-assignment/router"
 
 	"github.com/gin-gonic/gin"

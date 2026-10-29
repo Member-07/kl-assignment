@@ -1,8 +1,10 @@
 package router
 
 import (
-	"kl-assignment/config"
-	"kl-assignment/middleware"
+	"kl-assignment/app/health"
+	"kl-assignment/app/user"
+	"kl-assignment/pkg/config"
+	"kl-assignment/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -11,21 +13,17 @@ import (
 func Register(r *gin.Engine, cfg config.Config, db *gorm.DB) {
 	r.Use(gin.Recovery())
 	r.Use(middleware.Logger())
+	r.Use(middleware.ErrorResponseMiddleware())
 
-	// api := r.Group("/api")
-	// auth := api.Group("/auth")
-	// auth.POST("/register", authHandler.Register)
-	// auth.POST("/login", authHandler.Login)
+	api := r.Group("/api")
 
-	// user := api.Group("/users")
+	// health
+	healthHandler := health.New()
+	api.GET("/health", healthHandler.Check)
 
-	// user.Use(middleware.Auth(jwt))
-	// {
-	// 	user.POST("/", userHandler.Create)
-	// 	user.GET("", userHandler.List)
-	// 	user.GET("/:id", userHandler.GetByID)
-	// 	user.PUT("/:id", userHandler.Update)
-	// 	user.DELETE("/:id", userHandler.Delete)
-	// }
+	// User
+	userHandler := user.New(db)
+	user := api.Group("/user")
+	user.GET("/:user_id", userHandler.GetUserProfile)
 
 }

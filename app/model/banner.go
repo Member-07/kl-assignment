@@ -1,8 +1,8 @@
 package model
 
 type Banner struct {
-	BannerID    string `gorm:"column:banner_id;primaryKey;type:varchar(50)"`
-	UserID      string `gorm:"column:user_id;type:varchar(50)"`
+	BannerId    string `gorm:"column:banner_id;primaryKey;type:varchar(50)"`
+	UserId      string `gorm:"column:user_id;type:varchar(50)"`
 	Title       string `gorm:"column:title;type:varchar(255)"`
 	Description string `gorm:"column:description;type:text"`
 	Image       string `gorm:"column:image;type:varchar(255)"`
