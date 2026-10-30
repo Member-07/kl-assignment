@@ -1,27 +1,28 @@
 package account
 
 import (
-	"kl-assignment/app/model"
+	"context"
 
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	GetAccountByUserId(userId string) ([]model.AccountWithDetail, error)
+	GetAccountByUserId(ctx context.Context, userId string) ([]AccountWithDetail, error)
+	GetAccountFlags(ctx context.Context, accountIds []string) ([]AccountFlag, error)
 }
 
 type repository struct {
 	db *gorm.DB
 }
 
-func NewAccountRepository(db *gorm.DB) Repository {
+func NewRepository(db *gorm.DB) Repository {
 	return &repository{
 		db: db,
 	}
 }
 
-func (r *repository) GetAccountByUserId(userId string) ([]model.AccountWithDetail, error) {
-	var results []model.AccountWithDetail
+func (r *repository) GetAccountByUserId(ctx context.Context, userId string) ([]AccountWithDetail, error) {
+	var results []AccountWithDetail
 	selectField := []string{
 		"accounts.account_id",
 		"accounts.user_id",
@@ -34,7 +35,7 @@ func (r *repository) GetAccountByUserId(userId string) ([]model.AccountWithDetai
 		"account_details.is_main_account",
 		"account_details.progress",
 	}
-	err := r.db.Table("accounts").
+	err := r.db.Debug().WithContext(ctx).Table("accounts").
 		Select(selectField).
 		Joins("LEFT JOIN account_balances ON accounts.account_id = account_balances.account_id").
 		Joins("LEFT JOIN account_details ON accounts.account_id = account_details.account_id").
@@ -48,8 +49,10 @@ func (r *repository) GetAccountByUserId(userId string) ([]model.AccountWithDetai
 	return results, nil
 }
 
-func (r *repository) GetAccountFlags(accountIds []string) ([]AccountFlag, error) {
+func (r *repository) GetAccountFlags(ctx context.Context, accountIds []string) ([]AccountFlag, error) {
 	var flags []AccountFlag
-	err := r.db.Where("account_id IN ?", accountIds).Find(&flags).Error
+	err := r.db.Debug().WithContext(ctx).
+		Where("account_id IN ?", accountIds).
+		Find(&flags).Error
 	return flags, err
 }

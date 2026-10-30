@@ -1,16 +1,19 @@
 package router
 
 import (
+	"kl-assignment/app/account"
+	debitcard "kl-assignment/app/debit_card"
 	"kl-assignment/app/health"
 	"kl-assignment/app/user"
 	"kl-assignment/pkg/config"
 	"kl-assignment/pkg/middleware"
+	"log/slog"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func Register(r *gin.Engine, cfg config.Config, db *gorm.DB) {
+func Register(r *gin.Engine, cfg config.Config, db *gorm.DB, logger *slog.Logger) {
 	r.Use(gin.Recovery())
 	r.Use(middleware.Logger())
 	r.Use(middleware.ErrorResponseMiddleware())
@@ -21,9 +24,19 @@ func Register(r *gin.Engine, cfg config.Config, db *gorm.DB) {
 	healthHandler := health.New()
 	api.GET("/health", healthHandler.Check)
 
-	// User
-	userHandler := user.New(db)
+	// user
+	userHandler := user.New(db, logger)
 	user := api.Group("/user")
 	user.GET("/:user_id", userHandler.GetUserProfile)
 
+	// account
+	accountHandler := account.New(db, logger)
+	account := api.Group("/account")
+	account.GET("/:user_id", accountHandler.GetAccountsByUserId)
+
+	// debitcard
+	debitcardHandler := debitcard.New(db, logger)
+	debitcard := api.Group("/debit-card")
+	debitcard.GET("/:user_id", debitcardHandler.GetCardsByUserId)
+	debitcard.PUT("/status", debitcardHandler.UpdateCardStatus)
 }

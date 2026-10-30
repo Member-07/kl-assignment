@@ -1,18 +1,22 @@
 package account
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 type AccountWithDetail struct {
-	AccountId     string  `gorm:"column:account_id"`
-	UserId        string  `gorm:"column:user_id"`
-	Type          string  `gorm:"column:type"`
-	Currency      string  `gorm:"column:currency"`
-	AccountNumber string  `gorm:"column:account_number"`
-	Issuer        string  `gorm:"column:issuer"`
-	Amount        float64 `gorm:"column:amount"`
-	Color         string  `gorm:"column:color"`
-	IsMainAccount bool    `gorm:"column:is_main_account"`
-	Progress      int     `gorm:"column:progress"`
+	AccountId     string          `gorm:"column:account_id"`
+	UserId        string          `gorm:"column:user_id"`
+	Type          string          `gorm:"column:type"`
+	Currency      string          `gorm:"column:currency"`
+	AccountNumber string          `gorm:"column:account_number"`
+	Issuer        string          `gorm:"column:issuer"`
+	Amount        decimal.Decimal `gorm:"column:amount"`
+	Color         string          `gorm:"column:color"`
+	IsMainAccount bool            `gorm:"column:is_main_account"`
+	Progress      int             `gorm:"column:progress"`
 }
 
 type AccountFlag struct {

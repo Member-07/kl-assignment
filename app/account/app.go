@@ -1,7 +1,14 @@
 package account
 
-import "gorm.io/gorm"
+import (
+	"log/slog"
 
-func New(db *gorm.DB) Handler {
-	return nil
+	"gorm.io/gorm"
+)
+
+func New(db *gorm.DB, logger *slog.Logger) Handler {
+	repo := NewRepository(db)
+	service := NewService(repo, logger)
+
+	return NewHandler(service)
 }

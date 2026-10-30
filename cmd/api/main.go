@@ -3,12 +3,16 @@ package main
 import (
 	"kl-assignment/pkg/config"
 	"kl-assignment/pkg/database"
+	"kl-assignment/pkg/logger"
 	"kl-assignment/router"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	logger := logger.New()
+
+	logger.Info("Starting API server")
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
@@ -20,9 +24,7 @@ func main() {
 	}
 
 	r := gin.New()
-	router.Register(r, cfg, db)
+	router.Register(r, cfg, db, logger)
 
-	// Start server on port 8080 (default)
-	// Server will listen on 0.0.0.0:8080 (localhost:8080 on Windows)
 	r.Run()
 }

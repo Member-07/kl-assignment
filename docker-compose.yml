@@ -5,8 +5,6 @@ services:
     image: mysql:8.4
     ports:
       - "3306:3306"
-    command:
-      - --max-allowed-packet=256M
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -26,6 +24,8 @@ services:
       timeout: 3s
       retries: 20
       start_period: 30s
+    networks:
+      - app-net
   migrate:
     image: migrate/migrate
     command:
@@ -38,20 +38,32 @@ services:
     depends_on:
       kl-assignment-db:
         condition: service_healthy
+    networks:
+      - app-net
   api:
     build: .
     ports:
       - "${PORT}:${PORT}"
+    volumes:
+      - ./.env:/app/.env:ro
     env_file:
       - .env
-    # environment:
-    #   PORT: ${PORT}
-    #   MYSQL_DATABASE: ${DB_NAME}
-    #   MYSQL_USER: ${DB_USER}
-    #   MYSQL_PASSWORD: ${DB_PASSWORD}
+    environment:
+      PORT: ${PORT}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
     depends_on:
       kl-assignment-db:
         condition: service_healthy
+    networks:
+      - app-net
 
 volumes:
   mysql_data:
+
+networks:
+  app-net:
+    driver: bridge

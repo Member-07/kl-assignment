@@ -1,10 +1,14 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"log/slog"
 
-func New(db *gorm.DB) Handler {
-	repo := NewUserRepository(db)
-	service := NewUserService(repo)
+	"gorm.io/gorm"
+)
 
-	return NewUserHandler(service)
+func New(db *gorm.DB, logger *slog.Logger) Handler {
+	repo := NewRepository(db)
+	service := NewService(repo, logger)
+
+	return NewHandler(service)
 }

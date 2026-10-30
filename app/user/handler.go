@@ -15,7 +15,7 @@ type handler struct {
 	service Service
 }
 
-func NewUserHandler(service Service) Handler {
+func NewHandler(service Service) Handler {
 	return &handler{
 		service: service,
 	}
@@ -25,13 +25,13 @@ func (h *handler) GetUserProfile(c *gin.Context) {
 	userId := c.Param("user_id")
 
 	if userId == "" {
-		c.Error(response.NewBadRequestError("Invalid request body", "INVALID_REQUEST"))
+		c.Error(response.NewBadRequestError("INVALID_USER_ID", "User ID is required"))
 		return
 	}
 
 	result, err := h.service.GetUserProfile(c.Request.Context(), userId)
 	if err != nil {
-		c.Error(response.NewBadRequestError(err.Error(), "INVALID_REQUEST"))
+		c.Error(response.NewBadRequestError("INVALID_REQUEST", err.Error()))
 		return
 	}
 

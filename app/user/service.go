@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"log/slog"
 )
 
 type Service interface {
@@ -9,16 +10,18 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo   Repository
+	logger *slog.Logger
 }
 
-func NewUserService(repo Repository) Service {
-	return &service{repo: repo}
+func NewService(repo Repository, logger *slog.Logger) Service {
+	return &service{repo: repo, logger: logger}
 }
 
 func (s *service) GetUserProfile(ctx context.Context, userId string) (UserResponse, error) {
 	res, err := s.repo.GetUserWithGreeting(ctx, userId)
 	if err != nil {
+		s.logger.Error("GetUserWithGreeting", "error", err)
 		return UserResponse{}, err
 	}
 

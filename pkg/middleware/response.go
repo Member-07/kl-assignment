@@ -14,7 +14,7 @@ func ErrorResponseMiddleware() gin.HandlerFunc {
 		if len(c.Errors) > 0 {
 			err := c.Errors.Last().Err
 			if appErr, ok := err.(*response.AppError); ok {
-				c.JSON(appErr.StatusCode, response.MappingStandardResponse(appErr.Message, appErr.Message))
+				c.JSON(appErr.StatusCode, response.MappingStandardResponse(appErr.Message, ""))
 				return
 			}
 
