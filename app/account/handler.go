@@ -24,13 +24,13 @@ func NewHandler(service Service) Handler {
 func (h *handler) GetAccountsByUserId(c *gin.Context) {
 	userId := c.Param("user_id")
 	if userId == "" {
-		c.Error(response.NewBadRequestError("INVALID_USER_ID", "User ID is required"))
+		c.Error(response.NewBadRequestError("User ID is required"))
 		return
 	}
 
 	result, err := h.service.GetAccountsByUserId(c.Request.Context(), userId)
 	if err != nil {
-		c.Error(response.NewBadRequestError("INVALID_REQUEST", err.Error()))
+		c.Error(response.NewBadRequestError(err.Error()))
 		return
 	}
 

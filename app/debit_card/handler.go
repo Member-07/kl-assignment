@@ -26,13 +26,13 @@ func NewHandler(service Service) Handler {
 func (h *handler) GetCardsByUserId(c *gin.Context) {
 	userId := c.Param("user_id")
 	if userId == "" {
-		c.Error(response.NewBadRequestError("INVALID_USER_ID", "User ID is required"))
+		c.Error(response.NewBadRequestError("User ID is required"))
 		return
 	}
 
 	result, err := h.service.GetCardsByUserId(c.Request.Context(), userId)
 	if err != nil {
-		c.Error(response.NewBadRequestError("INVALID_REQUEST", err.Error()))
+		c.Error(response.NewBadRequestError(err.Error()))
 		return
 	}
 
@@ -43,18 +43,18 @@ func (h *handler) GetCardsByUserId(c *gin.Context) {
 func (h *handler) UpdateCardStatus(c *gin.Context) {
 	var req UpdateCardStatusRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.Error(response.NewBadRequestError("INVALID_REQUEST", "Invalid request body"))
+		c.Error(response.NewBadRequestError("Invalid request body"))
 		return
 	}
 
 	if err := validation.Struct(req); err != nil {
-		c.Error(response.NewBadRequestError("INVALID_REQUEST", err.Error()))
+		c.Error(response.NewBadRequestError(err.Error()))
 		return
 	}
 
 	err := h.service.UpdateCardStatus(c.Request.Context(), req)
 	if err != nil {
-		c.Error(response.NewBadRequestError("INVALID_REQUEST", err.Error()))
+		c.Error(response.NewBadRequestError(err.Error()))
 		return
 	}
 

@@ -2,8 +2,10 @@ package router
 
 import (
 	"kl-assignment/app/account"
+	"kl-assignment/app/banner"
 	debitcard "kl-assignment/app/debit_card"
 	"kl-assignment/app/health"
+	"kl-assignment/app/transaction"
 	"kl-assignment/app/user"
 	"kl-assignment/pkg/config"
 	"kl-assignment/pkg/middleware"
@@ -39,4 +41,15 @@ func Register(r *gin.Engine, cfg config.Config, db *gorm.DB, logger *slog.Logger
 	debitcard := api.Group("/debit-card")
 	debitcard.GET("/:user_id", debitcardHandler.GetCardsByUserId)
 	debitcard.PUT("/status", debitcardHandler.UpdateCardStatus)
+
+	// banner
+	bannerHandler := banner.New(db, logger)
+	banner := api.Group("/banner")
+	banner.GET("/", bannerHandler.GetAllBanners)
+	banner.GET("/:user_id", bannerHandler.GetBannersByUserId)
+
+	// transaction
+	transactionHandler := transaction.New(db, logger)
+	transaction := api.Group("/transaction")
+	transaction.GET("/:user_id", transactionHandler.GetTransactionsByUserId)
 }
