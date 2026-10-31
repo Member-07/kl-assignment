@@ -20,3 +20,8 @@ type AccountFlagResponse struct {
 	FlagType  string `json:"flag_type"`
 	FlagValue string `json:"flag_value"`
 }
+
+type SetMainAccountRequest struct {
+	UserId    string `json:"user_id" validate:"required"`
+	AccountId string `json:"account_id" validate:"required"`
+}

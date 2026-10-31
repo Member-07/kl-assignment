@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	GetAccountByUserId(ctx context.Context, userId string) ([]AccountWithDetail, error)
 	GetAccountFlags(ctx context.Context, accountIds []string) ([]AccountFlag, error)
+	SetMainAccount(ctx context.Context, userId string, accountId string) error
 }
 
 type repository struct {
@@ -55,4 +56,20 @@ func (r *repository) GetAccountFlags(ctx context.Context, accountIds []string) (
 		Where("account_id IN ?", accountIds).
 		Find(&flags).Error
 	return flags, err
+}
+
+func (r *repository) SetMainAccount(ctx context.Context, userId string, accountId string) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// unset all accounts for this user
+		if err := tx.Model(&AccountDetail{}).
+			Where("user_id = ?", userId).
+			Update("is_main_account", false).Error; err != nil {
+			return err
+		}
+		// set target account as main
+		return tx.Model(&AccountDetail{}).
+			Where("account_id = ?", accountId).
+			Where("user_id = ?", userId).
+			Update("is_main_account", true).Error
+	})
 }

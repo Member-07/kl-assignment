@@ -10,13 +10,14 @@ import (
 )
 
 func main() {
-	logger := logger.New()
-
-	logger.Info("Starting API server")
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
+
+	logger := logger.New(cfg.LogLevel)
+
+	logger.Info("Starting API server")
 
 	db, err := database.ConnectMysql(cfg.MysqlConfig)
 	if err != nil {

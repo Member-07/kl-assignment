@@ -12,6 +12,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     go build -trimpath -ldflags="-s -w" \
     -o /api ./cmd/api
 FROM alpine:3.24
+RUN apk add --no-cache curl
 RUN apk add --no-cache ca-certificates \
     && addgroup -S app \
     && adduser -S -G app app

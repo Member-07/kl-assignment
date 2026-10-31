@@ -32,3 +32,13 @@ type AccountFlag struct {
 func (AccountFlag) TableName() string {
 	return "account_flags"
 }
+
+type AccountDetail struct {
+	AccountId     string `gorm:"column:account_id;primaryKey"`
+	UserId        string `gorm:"column:user_id"`
+	IsMainAccount bool   `gorm:"column:is_main_account"`
+}
+
+func (AccountDetail) TableName() string {
+	return "account_details"
+}

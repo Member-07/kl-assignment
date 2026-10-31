@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	Port        string
+	LogLevel    string
 	MysqlConfig DB
 }
 
@@ -20,7 +21,8 @@ func Load() (Config, error) {
 	}
 
 	cfg := Config{
-		Port: env("PORT", ":8080"),
+		Port:     env("PORT", ":8080"),
+		LogLevel: env("LOG_LEVEL", "INFO"),
 		MysqlConfig: DB{
 			DBHost:     env("DB_HOST", "127.0.0.1"),
 			DBPort:     env("DB_PORT", "3306"),

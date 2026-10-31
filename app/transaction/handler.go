@@ -38,5 +38,5 @@ func (h *handler) GetTransactionsByUserId(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, response.MappingStandardResponseWithPagination(response.SUCCESS, result.Data, result.Pagination))
 }

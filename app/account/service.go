@@ -7,6 +7,7 @@ import (
 
 type Service interface {
 	GetAccountsByUserId(ctx context.Context, userId string) ([]AccountResponse, error)
+	SetMainAccount(ctx context.Context, req SetMainAccountRequest) error
 }
 
 type service struct {
@@ -56,6 +57,14 @@ func (s *service) GetAccountsByUserId(ctx context.Context, userId string) ([]Acc
 	}
 
 	return results, nil
+}
+
+func (s *service) SetMainAccount(ctx context.Context, req SetMainAccountRequest) error {
+	if err := s.repo.SetMainAccount(ctx, req.UserId, req.AccountId); err != nil {
+		s.logger.Error("SetMainAccount", "error", err)
+		return err
+	}
+	return nil
 }
 
 func mappingAccountResponse(account AccountWithDetail, accFlags []AccountFlagResponse) AccountResponse {

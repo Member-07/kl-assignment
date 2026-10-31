@@ -35,6 +35,7 @@ func Register(r *gin.Engine, cfg config.Config, db *gorm.DB, logger *slog.Logger
 	accountHandler := account.New(db, logger)
 	account := api.Group("/account")
 	account.GET("/:user_id", accountHandler.GetAccountsByUserId)
+	account.PUT("/main", accountHandler.SetMainAccount)
 
 	// debitcard
 	debitcardHandler := debitcard.New(db, logger)

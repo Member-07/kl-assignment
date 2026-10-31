@@ -29,7 +29,7 @@ func (h *handler) GetAllBanners(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, response.MappingStandardResponse(response.SUCCESS, result))
 }
 
 func (h *handler) GetBannersByUserId(c *gin.Context) {
@@ -45,5 +45,5 @@ func (h *handler) GetBannersByUserId(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, response.MappingStandardResponse(response.SUCCESS, result))
 }
