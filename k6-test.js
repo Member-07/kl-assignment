@@ -25,8 +25,6 @@ export const options = {
   ],
 };
 
-// Custom metrics counters for each endpoint
-const healthCounter = new Counter('health_requests');
 const userProfileCounter = new Counter('user_profile_requests');
 const bannerPublicCounter = new Counter('banner_public_requests');
 const bannerUserCounter = new Counter('banner_user_requests');
@@ -44,16 +42,6 @@ const jsonHeaders = {
 };
 
 export default function () {
-  // 1. Health API
-  group('Health API', () => {
-    const res = http.get(`${BASE_URL}/api/health`);
-    check(res, {
-      'health status is 200': (r) => r.status === 200,
-    });
-    healthCounter.add(1);
-  });
-
-  // 2. User Profile API
   group('User Profile API', () => {
     const res = http.get(`${BASE_URL}/api/user/${USER_ID}`,
       { tags: { endpoint: 'GET_UserProfile'},
@@ -64,7 +52,6 @@ export default function () {
     userProfileCounter.add(1);
   });
 
-  // 3. Banner APIs (Public & User-targeted)
   group('Banner API', () => {
     const publicRes = http.get(`${BASE_URL}/api/banner/`,
       { tags: { endpoint: 'GET_Banner'},
@@ -83,7 +70,6 @@ export default function () {
     bannerUserCounter.add(1);
   });
 
-  // 4. Account APIs (GET accounts & PUT set main account)
   group('Account API', () => {
     let accountId = '000020ece1a211ef95a30242ac180002';
     const getRes = http.get(`${BASE_URL}/api/account/${USER_ID}`,
@@ -116,7 +102,6 @@ export default function () {
     accountSetMainCounter.add(1);
   });
 
-  // 5. Debit Card APIs (GET cards & PUT update status)
   group('Debit Card API', () => {
     let cardId = '000018cfe1a211ef95a30242ac180002';
     const getRes = http.get(`${BASE_URL}/api/debit-card/${USER_ID}`,
@@ -150,7 +135,6 @@ export default function () {
     debitCardStatusCounter.add(1);
   });
 
-  // 6. Transaction API (GET paginated)
   group('Transaction API', () => {
     const res = http.get(`${BASE_URL}/api/transaction/${USER_ID}?page=1&limit=10`,
       { tags: { endpoint: 'GET_Transaction' },
@@ -164,7 +148,6 @@ export default function () {
   sleep(1);
 }
 
-// Generate HTML and text summary reports
 export function handleSummary(data) {
   return {
     'reports/summary.html': htmlReport(data),

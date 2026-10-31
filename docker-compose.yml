@@ -103,6 +103,7 @@ services:
           memory: 256M
     env_file:
       - .env
+    working_dir: /scripts
     volumes:
       - ./k6-test.js:/scripts/k6-test.js:ro
       - ./reports:/scripts/reports
