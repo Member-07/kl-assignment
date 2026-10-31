@@ -309,8 +309,23 @@ Schema migrations are in `migrations/`. They run automatically on `docker compos
 | `banners`            | Promotional banner content         |
 | `transactions`       | Recent transaction list            |
 
----
+### Schema Optimization Recommendations
+```sql
+-- Speed up account listing & main account atomic update
+CREATE INDEX idx_accounts_user_id ON accounts(user_id);
+CREATE INDEX idx_account_details_user_id ON account_details(user_id);
+CREATE INDEX idx_account_flags_account_id ON account_flags(account_id);
 
+-- Speed up debit card queries
+CREATE INDEX idx_debit_cards_user_id ON debit_cards(user_id);
+
+-- Speed up transaction pagination
+CREATE INDEX idx_transactions_user_id ON transactions(user_id);
+
+-- Speed up public & user targeted banners
+CREATE INDEX idx_banners_user_id ON banners(user_id);
+```
+---
 ## Unit Testing
 
 Run all unit tests across all domain modules:
@@ -337,22 +352,64 @@ Test coverage results:
 
 ## Stress Testing (k6)
 
-A stress test script is provided in `k6-test.js` simulating virtual users (VUs) ramping up to 50 concurrent users.
+A stress test script is provided in `k6-test.js` covering **all endpoints** (GET & PUT) with 50 concurrent virtual users (VUs) ramp-up. It automatically produces an HTML report (`summary.html`) and terminal output upon completion.
 
-### Run with local k6:
+### Tested Endpoints:
+1. `GET /api/health`
+2. `GET /api/user/:user_id`
+3. `GET /api/banner/`
+4. `GET /api/banner/:user_id`
+5. `GET /api/account/:user_id`
+6. `PUT /api/account/main`
+7. `GET /api/debit-card/:user_id`
+8. `PUT /api/debit-card/status`
+9. `GET /api/transaction/:user_id?page=1&limit=10`
+
+### Execution:
 
 ```bash
+# Run with local k6:
 k6 run k6-test.js
-```
 
-### Run with Docker k6:
+# build k6 docker
+docker compose up -d --build k6 
 
-```bash
-docker run --rm -i --network=host grafana/k6 run - k6-test.js
-```
+# start k6
+docker start k6
 
-Custom URL or User ID:
-```bash
+# Custom host / user:
 k6 run -e BASE_URL=http://localhost:8080 -e USER_ID=000018b0e1a211ef95a30242ac180002 k6-test.js
 ```
 
+### Stress Test Sample Report (50 VUs Ramp-up) 
+
+[!NOTE] **local Test 1 min**
+
+- **Test Duration:** 1m 20s (10s ramp-up $\rightarrow$ 60s peak 50 VUs $\rightarrow$ 10s ramp-down)
+    account_get_requests...........: 2218    27.490962/s
+    account_set_main_requests......: 2218    27.490962/s
+    banner_public_requests.........: 2218    27.490962/s
+    banner_user_requests...........: 2218    27.490962/s
+    health_requests................: 2218    27.490962/s
+    debit_card_status_requests.....: 2218    27.490962/s
+    debit_card_get_requests........: 2218    27.490962/s
+    transaction_requests...........: 2218    27.490962/s
+    user_profile_requests..........: 2218    27.490962/s
+    checks.........................: 100.00% ✓ 19962      ✗ 0    
+    data_received..................: 6.5 MB  80 kB/s
+    data_sent......................: 2.6 MB  33 kB/s
+    group_duration.................: min=121.81µs max=566.48ms avg=17.59ms med=1.68ms  p(90)=34.06ms p(95)=65.56ms  p(99)=315.5ms 
+    http_req_blocked...............: min=569ns    max=8.46ms   avg=5.12µs  med=2.35µs  p(90)=4.54µs  p(95)=6.7µs    p(99)=22.7µs  
+    http_req_connecting............: min=0s       max=2.58ms   avg=769ns   med=0s      p(90)=0s      p(95)=0s       p(99)=0s      
+    http_req_duration..............: min=90.59µs  max=493.33ms avg=11.59ms med=2.01ms  p(90)=20.42ms p(95)=36.61ms  p(99)=220.28ms
+    { expected_response:true }...: min=90.59µs  max=493.33ms avg=11.59ms med=2.01ms  p(90)=20.42ms p(95)=36.61ms  p(99)=220.28ms
+    http_req_failed................: 0.00%   ✓ 0          ✗ 19962
+    http_req_receiving.............: min=6.53µs   max=11.28ms  avg=55.3µs  med=36.31µs p(90)=85.9µs  p(95)=118.89µs p(99)=275.78µs
+    http_req_sending...............: min=2.11µs   max=5.05ms   avg=14.82µs med=7.98µs  p(90)=22.07µs p(95)=29.72µs  p(99)=87.82µs 
+    http_req_tls_handshaking.......: min=0s       max=0s       avg=0s      med=0s      p(90)=0s      p(95)=0s       p(99)=0s      
+    http_req_waiting...............: min=71.13µs  max=493.28ms avg=11.52ms med=1.91ms  p(90)=20.35ms p(95)=36.53ms  p(99)=220.19ms
+    http_reqs......................: 19962   247.418657/s
+    iteration_duration.............: min=1.02s    max=1.63s    avg=1.1s    med=1.05s   p(90)=1.28s   p(95)=1.38s    p(99)=1.55s   
+    iterations.....................: 2218    27.490962/s
+    vus............................: 3       min=2        max=50 
+    vus_max........................: 50      min=50       max=50 
