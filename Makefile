@@ -6,3 +6,6 @@ run:
 
 migrate:
 	docker compose up -d migrate
+
+k6:
+	docker compose up -d k6

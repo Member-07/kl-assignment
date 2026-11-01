@@ -51,6 +51,7 @@ Edit `.env` as needed:
 
 ### 2. Run with Docker (recommended)
 
+[!NOTE] **If got error range of CPUs you can adjust it yourself**
 ```bash
 # Start DB + run migrations + start API
 docker compose up -d
@@ -374,7 +375,7 @@ k6 run k6-test.js
 # build k6 docker
 docker compose up -d --build k6 
 
-# start k6
+# start docker k6
 docker start k6
 
 # Custom host / user:
@@ -383,33 +384,38 @@ k6 run -e BASE_URL=http://localhost:8080 -e USER_ID=000018b0e1a211ef95a30242ac18
 
 ### Stress Test Sample Report (50 VUs Ramp-up) 
 
-[!NOTE] **local Test 1 min**
-
-- **Test Duration:** 1m 20s (10s ramp-up $\rightarrow$ 60s peak 50 VUs $\rightarrow$ 10s ramp-down)
-    account_get_requests...........: 2218    27.490962/s
-    account_set_main_requests......: 2218    27.490962/s
-    banner_public_requests.........: 2218    27.490962/s
-    banner_user_requests...........: 2218    27.490962/s
-    health_requests................: 2218    27.490962/s
-    debit_card_status_requests.....: 2218    27.490962/s
-    debit_card_get_requests........: 2218    27.490962/s
-    transaction_requests...........: 2218    27.490962/s
-    user_profile_requests..........: 2218    27.490962/s
-    checks.........................: 100.00% ✓ 19962      ✗ 0    
-    data_received..................: 6.5 MB  80 kB/s
-    data_sent......................: 2.6 MB  33 kB/s
-    group_duration.................: min=121.81µs max=566.48ms avg=17.59ms med=1.68ms  p(90)=34.06ms p(95)=65.56ms  p(99)=315.5ms 
-    http_req_blocked...............: min=569ns    max=8.46ms   avg=5.12µs  med=2.35µs  p(90)=4.54µs  p(95)=6.7µs    p(99)=22.7µs  
-    http_req_connecting............: min=0s       max=2.58ms   avg=769ns   med=0s      p(90)=0s      p(95)=0s       p(99)=0s      
-    http_req_duration..............: min=90.59µs  max=493.33ms avg=11.59ms med=2.01ms  p(90)=20.42ms p(95)=36.61ms  p(99)=220.28ms
-    { expected_response:true }...: min=90.59µs  max=493.33ms avg=11.59ms med=2.01ms  p(90)=20.42ms p(95)=36.61ms  p(99)=220.28ms
-    http_req_failed................: 0.00%   ✓ 0          ✗ 19962
-    http_req_receiving.............: min=6.53µs   max=11.28ms  avg=55.3µs  med=36.31µs p(90)=85.9µs  p(95)=118.89µs p(99)=275.78µs
-    http_req_sending...............: min=2.11µs   max=5.05ms   avg=14.82µs med=7.98µs  p(90)=22.07µs p(95)=29.72µs  p(99)=87.82µs 
-    http_req_tls_handshaking.......: min=0s       max=0s       avg=0s      med=0s      p(90)=0s      p(95)=0s       p(99)=0s      
-    http_req_waiting...............: min=71.13µs  max=493.28ms avg=11.52ms med=1.91ms  p(90)=20.35ms p(95)=36.53ms  p(99)=220.19ms
-    http_reqs......................: 19962   247.418657/s
-    iteration_duration.............: min=1.02s    max=1.63s    avg=1.1s    med=1.05s   p(90)=1.28s   p(95)=1.38s    p(99)=1.55s   
-    iterations.....................: 2218    27.490962/s
-    vus............................: 3       min=2        max=50 
-    vus_max........................: 50      min=50       max=50 
+[!NOTE] **local Test 5 min**
+- **Test Duration:** 5m 20s (10s ramp-up $\rightarrow$ 600s peak 50 VUs $\rightarrow$ 10s ramp-down)
+- Monitor in Docker Container at Peak time
+  CPU Reservation 1.5 Cores
+  CPU Limit 2 Cores
+  Actual CPU Usage 1.313 Cores
+  CPU Usage (% of Limit) 65.65%
+  Memory Usage 565.1 MiB
+  Memory Limit 1.5 GiB
+  Memory Usage (%) 36.79%
+- result k6
+  account_get_requests...........: 2218    27.490962/s
+  account_get_requests...........: 9522    29.682913/s
+  account_set_main_requests......: 9522    29.682913/s
+  banner_public_requests.........: 9522    29.682913/s
+  banner_user_requests...........: 9522    29.682913/s
+  debit_card_get_requests........: 9522    29.682913/s
+  debit_card_status_requests.....: 9522    29.682913/s
+  transaction_requests...........: 9522    29.682913/s
+  checks.........................: 100.00% ✓ 76176      ✗ 0    
+  data_received..................: 26 MB   81 kB/s
+  data_sent......................: 11 MB   33 kB/s
+  group_duration.................: min=331.84µs max=1.19s    avg=25.29ms med=2.98ms  p(90)=50.69ms p(95)=117.8ms  p(99)=413.18ms
+  http_req_blocked...............: min=621ns    max=2.93ms   avg=3.87µs  med=2.29µs  p(90)=4.45µs  p(95)=6.22µs   p(99)=19.62µs 
+  http_req_connecting............: min=0s       max=2.43ms   avg=162ns   med=0s      p(90)=0s      p(95)=0s       p(99)=0s      
+  ✓ http_req_duration..............: min=51.74µs  max=786.63ms avg=15.67ms med=3.49ms  p(90)=27.85ms p(95)=58.12ms  p(99)=276.16ms
+  { expected_response:true }...: min=51.74µs  max=786.63ms avg=15.67ms med=3.49ms  p(90)=27.85ms p(95)=58.12ms  p(99)=276.16ms
+  ✓ http_req_failed................: 0.00%   ✓ 0          ✗ 76176
+  http_req_receiving.............: min=6.33µs   max=11.82ms  avg=59.79µs med=36.63µs p(90)=87.98µs p(95)=126.04µs p(99)=347.26µs
+  http_req_sending...............: min=2.05µs   max=9.52ms   avg=14.25µs med=7.76µs  p(90)=21.58µs p(95)=28.76µs  p(99)=78.54µs 
+  http_req_tls_handshaking.......: min=0s       max=0s       avg=0s      med=0s      p(90)=0s      p(95)=0s       p(99)=0s      
+  http_req_waiting...............: min=0s       max=786.51ms avg=15.6ms  med=3.43ms  p(90)=27.73ms p(95)=58ms     p(99)=276.12ms
+  iteration_duration.............: min=1.02s    max=2.48s    avg=1.12s   med=1.06s   p(90)=1.3s    p(95)=1.45s    p(99)=1.69s   
+  http_reqs......................: 76176   237.463303/s
+  iterations.....................: 9522    29.682913/s

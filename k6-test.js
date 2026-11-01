@@ -6,9 +6,9 @@ import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 20 },  // Ramp-up
-    { duration: '60s', target: 50 },  // Peak 50 virtual users
-    { duration: '10s', target: 0 },   // Ramp-down
+    { duration: '10s', target: 20 },   // Ramp-up
+    { duration: '300s', target: 50 },  // Peak 50 virtual users
+    { duration: '10s', target: 0 },    // Ramp-down
   ],
   thresholds: {
     http_req_failed: ['rate<0.01'],    // Errors under 1%
