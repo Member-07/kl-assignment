@@ -51,7 +51,8 @@ Edit `.env` as needed:
 
 ### 2. Run with Docker (recommended)
 
-[!NOTE] **If got error range of CPUs you can adjust it yourself**
+> [!NOTE]
+> If got error range of CPUs you can adjust it yourself
 ```bash
 # Start DB + run migrations + start API
 docker compose up -d
@@ -312,18 +313,11 @@ Schema migrations are in `migrations/`. They run automatically on `docker compos
 
 ### Schema Optimization Recommendations
 ```sql
--- Speed up account listing & main account atomic update
 CREATE INDEX idx_accounts_user_id ON accounts(user_id);
 CREATE INDEX idx_account_details_user_id ON account_details(user_id);
 CREATE INDEX idx_account_flags_account_id ON account_flags(account_id);
-
--- Speed up debit card queries
 CREATE INDEX idx_debit_cards_user_id ON debit_cards(user_id);
-
--- Speed up transaction pagination
 CREATE INDEX idx_transactions_user_id ON transactions(user_id);
-
--- Speed up public & user targeted banners
 CREATE INDEX idx_banners_user_id ON banners(user_id);
 ```
 ---
@@ -384,18 +378,19 @@ k6 run -e BASE_URL=http://localhost:8080 -e USER_ID=000018b0e1a211ef95a30242ac18
 
 ### Stress Test Sample Report (50 VUs Ramp-up) 
 
-[!NOTE] **local Test 5 min**
-- **Test Duration:** 5m 20s (10s ramp-up $\rightarrow$ 600s peak 50 VUs $\rightarrow$ 10s ramp-down)
-- Monitor in Docker Container at Peak time
-  CPU Reservation 1.5 Cores
-  CPU Limit 2 Cores
-  Actual CPU Usage 1.313 Cores
-  CPU Usage (% of Limit) 65.65%
-  Memory Usage 565.1 MiB
-  Memory Limit 1.5 GiB
-  Memory Usage (%) 36.79%
-- result k6
-  account_get_requests...........: 2218    27.490962/s
+> [!NOTE]
+> Local Test (5 min continuous peak load)
+
+- **Test Duration:** 5m 20s (10s ramp-up -> 600s peak 50 VUs -> 10s ramp-down)
+- **Docker Container Resource Monitoring (at peak):**
+  - CPU Reservation: 1.5 Cores
+  - CPU Limit: 2 Cores
+  - Actual CPU Usage: 1.313 Cores (65.65% of Limit)
+  - Memory Usage: 565.1 MiB / 1.5 GiB (36.79%)
+
+- **k6 Execution Results:**
+
+```text
   account_get_requests...........: 9522    29.682913/s
   account_set_main_requests......: 9522    29.682913/s
   banner_public_requests.........: 9522    29.682913/s
@@ -419,3 +414,4 @@ k6 run -e BASE_URL=http://localhost:8080 -e USER_ID=000018b0e1a211ef95a30242ac18
   iteration_duration.............: min=1.02s    max=2.48s    avg=1.12s   med=1.06s   p(90)=1.3s    p(95)=1.45s    p(99)=1.69s   
   http_reqs......................: 76176   237.463303/s
   iterations.....................: 9522    29.682913/s
+```
