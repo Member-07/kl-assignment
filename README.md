@@ -37,7 +37,8 @@ cp .env.example .env
 ```
 
 Edit `.env` as needed:
-> [!NOTE] if run in local change `DB_HOST` to localhost
+> [!NOTE]
+> if run in local change `DB_HOST` to localhost
 | Variable             | Description               | Default              |
 |----------------------|---------------------------|----------------------|
 | `PORT`               | API server port           | `8080`               |
