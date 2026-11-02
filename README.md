@@ -347,7 +347,7 @@ Test coverage results:
 
 ## Stress Testing (k6)
 
-A stress test script is provided in `k6-test.js` covering **all endpoints** (GET & PUT) with 50 concurrent virtual users (VUs) ramp-up. It automatically produces an HTML report (`summary.html`) and terminal output upon completion.
+A stress test script is provided in `k6-test.js` covering **all endpoints** (GET & PUT) with 50 concurrent virtual users (VUs) ramp-up. It automatically produces an HTML report (`reports/summary.html`) and terminal output upon completion.
 
 ### Tested Endpoints:
 1. `GET /api/health`
